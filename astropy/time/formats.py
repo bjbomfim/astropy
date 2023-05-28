@@ -329,11 +329,11 @@ class TimeFormat:
 
             try:
                 val1, val2 = quantity_day_frac(val1, val2)
-            except u.UnitsError:
+            except u.UnitsError as exc:
                 raise u.UnitConversionError(
                     "only quantities with time units can be "
                     "used to instantiate Time instances."
-                )
+                ) from exc
             # We now have days, but the format may expect another unit.
             # On purpose, multiply with 1./day_unit because typically it is
             # 1./erfa.DAYSEC, and inverting it recovers the integer.
@@ -506,12 +506,12 @@ class TimeNumeric(TimeFormat):
         if convert is not None:
             try:
                 val1, val2 = convert(val1, val2)
-            except Exception:
+            except Exception as exc:
                 raise TypeError(
                     f"for {self.name} class, input should be (long) doubles, string, "
                     "or Decimal, and second values are only allowed for "
                     "(long) doubles."
-                )
+                ) from exc
 
         return val1, val2
 
@@ -2047,8 +2047,8 @@ class TimeEpochDateString(TimeString):
                 year = float(year_str)
                 if epoch_type.upper() != epoch_prefix:
                     raise ValueError
-            except (IndexError, ValueError, UnicodeEncodeError):
-                raise ValueError(f"Time {val} does not match {self.name} format")
+            except (IndexError, ValueError, UnicodeEncodeError) as exc:
+                raise ValueError(f"Time {val} does not match {self.name} format") from exc
             else:
                 years[...] = year
 

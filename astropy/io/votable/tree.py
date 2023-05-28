@@ -2731,8 +2731,8 @@ class Table(Element, _IDProperty, _NameProperty, _UcdProperty, _DescriptionPrope
             elif issubclass(columns.dtype.type, np.character):
                 try:
                     colnumbers = [names.index(x) for x in columns]
-                except ValueError:
-                    raise ValueError(f"Columns '{columns}' not found in fields list")
+                except ValueError as exc:
+                    raise ValueError(f"Columns '{columns}' not found in fields list") from exc
             else:
                 raise TypeError("Invalid columns list")
 

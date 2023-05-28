@@ -633,7 +633,7 @@ class FITS_rec(np.recarray):
         try:
             del self.__dict__["_coldefs"]
         except KeyError as exc:
-            raise AttributeError(exc.args[0])
+            raise AttributeError(exc.args[0]) from exc
 
     def __del__(self):
         try:
@@ -880,7 +880,7 @@ class FITS_rec(np.recarray):
             raise ValueError(
                 "{}; the header may be missing the necessary TNULL{} "
                 "keyword or the table contains invalid data".format(exc, indx + 1)
-            )
+            ) from exc
 
         return dummy
 
@@ -1225,7 +1225,7 @@ class FITS_rec(np.recarray):
                         exc.index[0] if len(exc.index) == 1 else exc.index,
                         exc.start,
                     )
-                )
+                ) from exc
         else:
             # Otherwise go ahead and do a direct copy into--if both are type
             # 'U' we'll handle encoding later
@@ -1366,7 +1366,7 @@ def _ascii_encode(inarray, out=None):
             outitem[...] = initem.item().encode("ascii")
     except UnicodeEncodeError as exc:
         index = np.unravel_index(it.iterindex, inarray.shape)
-        raise _UnicodeArrayEncodeError(*(exc.args + (index,)))
+        raise _UnicodeArrayEncodeError(*(exc.args + (index,))) from exc
 
     return it.operands[1]
 

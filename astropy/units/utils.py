@@ -246,11 +246,11 @@ def validate_power(p):
     if denom is None:
         try:
             p = float(p)
-        except Exception:
+        except Exception as exc:
             if not np.isscalar(p):
                 raise ValueError(
                     "Quantities and Units may only be raised to a scalar power"
-                )
+                ) from exc
             else:
                 raise
 

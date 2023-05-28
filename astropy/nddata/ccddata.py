@@ -709,14 +709,14 @@ def fits_ccddata_reader(
                     if fits_unit_string in kifus:
                         fits_unit_string = kifus[fits_unit_string]
                     fits_unit_string = u.Unit(fits_unit_string)
-                except ValueError:
+                except ValueError as exc:
                     raise ValueError(
                         "The Header value for the key BUNIT ({}) cannot be "
                         "interpreted as valid unit. To successfully read the "
                         "file as CCDData you can pass in a valid `unit` "
                         "argument explicitly or change the header of the FITS "
                         "file before reading it.".format(fits_unit_string)
-                    )
+                    ) from exc
             else:
                 log.info(
                     "using the unit {} passed to the FITS reader instead "

@@ -475,11 +475,11 @@ class WCS(FITSWCSAPIMixin, WCSBase):
                     header = fits.Header()
                     for dict_key in orig_header.keys():
                         header[dict_key] = orig_header[dict_key]
-                except TypeError:
+                except TypeError as exc:
                     raise TypeError(
                         "header must be a string, an astropy.io.fits.Header "
                         "object, or a dict-like object"
-                    )
+                    ) from exc
 
             if isinstance(header, fits.Header):
                 header_string = header.tostring().rstrip()
@@ -1536,11 +1536,11 @@ reduce these to 2 dimensions using the naxis kwarg.
                 xy, origin = args
                 xy = np.asarray(xy)
                 origin = int(origin)
-            except Exception:
+            except Exception as exc:
                 raise TypeError(
                     "When providing two arguments, they must be "
                     f"(coords[N][{self.naxis}], origin)"
-                )
+                ) from exc
             if xy.shape == () or len(xy.shape) == 1:
                 return _return_list_of_arrays([xy], origin)
             return _return_single_array(xy, origin)
@@ -1551,11 +1551,11 @@ reduce these to 2 dimensions using the naxis kwarg.
             try:
                 axes = [np.asarray(x) for x in axes]
                 origin = int(origin)
-            except Exception:
+            except Exception as exc:
                 raise TypeError(
                     "When providing more than two arguments, they must be "
                     + "a 1-D array for each axis, followed by an origin."
-                )
+                ) from exc
 
             return _return_list_of_arrays(axes, origin)
 

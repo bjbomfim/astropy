@@ -304,7 +304,7 @@ class _ModelMeta(abc.ABCMeta):
                     cls, bounding_box, _preserve_ignore=True
                 )
             except ValueError as exc:
-                raise ModelDefinitionError(exc.args[0])
+                raise ModelDefinitionError(exc.args[0]) from exc
         else:
             sig = signature(bounding_box)
             # May be a method that only takes 'self' as an argument (like a
@@ -1268,7 +1268,7 @@ class Model(metaclass=_ModelMeta):
             raise InputParameterError(
                 "Input parameter values not compatible with the model "
                 f"parameters array: {e!r}"
-            )
+            ) from e
         self._array_to_parameters()
 
     @property
@@ -1512,7 +1512,7 @@ class Model(metaclass=_ModelMeta):
             try:
                 bounding_box = cls.validate(self, bounding_box, _preserve_ignore=True)
             except ValueError as exc:
-                raise ValueError(exc.args[0])
+                raise ValueError(exc.args[0]) from exc
 
         self._user_bounding_box = bounding_box
 
@@ -1866,12 +1866,12 @@ class Model(metaclass=_ModelMeta):
             else:
                 try:
                     out = add_array(out, self(*sub_coords), pos)
-                except ValueError:
+                except ValueError as exc:
                     raise ValueError(
                         "The `bounding_box` is larger than the input out in "
                         "one or more dimensions. Set "
                         "`model.bounding_box = None`."
-                    )
+                    ) from exc
         else:
             if coords is None:
                 im_shape = out.shape
@@ -3967,12 +3967,12 @@ class CompoundModel(Model):
             else:
                 try:
                     out = add_array(out, self(*sub_coords), pos)
-                except ValueError:
+                except ValueError as exc:
                     raise ValueError(
                         "The `bounding_box` is larger than the input out in "
                         "one or more dimensions. Set "
                         "`model.bounding_box = None`."
-                    )
+                    ) from exc
         else:
             if coords is None:
                 im_shape = out.shape

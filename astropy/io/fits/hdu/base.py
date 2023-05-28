@@ -446,14 +446,14 @@ class _BaseHDU:
                 # Test that the given object supports the buffer interface by
                 # ensuring an ndarray can be created from it
                 np.ndarray((), dtype="ubyte", buffer=data)
-            except TypeError:
+            except TypeError as exc:
                 raise TypeError(
                     f"The provided object {data!r} does not contain an underlying "
                     "memory buffer.  fromstring() requires an object that "
                     "supports the buffer interface such as bytes, buffer, "
                     "memoryview, ndarray, etc.  This restriction is to ensure "
                     "that efficient access to the array/table data is possible."
-                )
+                ) from exc
 
             if header is None:
 

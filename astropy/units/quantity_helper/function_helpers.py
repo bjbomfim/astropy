@@ -219,10 +219,10 @@ def sinc(x):
 
     try:
         x = x.to_value(radian)
-    except UnitsError:
+    except UnitsError as exc:
         raise UnitTypeError(
             "Can only apply 'sinc' function to quantities with angle units"
-        )
+        ) from exc
     return (x,), {}, dimensionless_unscaled, None
 
 

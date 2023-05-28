@@ -422,8 +422,8 @@ class HDUList(list, _Verify):
 
         try:
             self._try_while_unread_hdus(super().__setitem__, _key, hdu)
-        except IndexError:
-            raise IndexError(f"Extension {key} is out of bound or not found.")
+        except IndexError as exc:
+            raise IndexError(f"Extension {key} is out of bound or not found.") from exc
 
         self._resize = True
         self._truncate = False
@@ -517,14 +517,14 @@ class HDUList(list, _Verify):
             # Test that the given object supports the buffer interface by
             # ensuring an ndarray can be created from it
             np.ndarray((), dtype="ubyte", buffer=data)
-        except TypeError:
+        except TypeError as e:
             raise TypeError(
                 f"The provided object {data} does not contain an underlying "
                 "memory buffer.  fromstring() requires an object that "
                 "supports the buffer interface such as bytes, buffer, "
                 "memoryview, ndarray, etc.  This restriction is to ensure "
                 "that efficient access to the array/table data is possible."
-            )
+            ) from e
 
         return cls._readfrom(data=data, **kwargs)
 

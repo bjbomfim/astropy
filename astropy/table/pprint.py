@@ -533,11 +533,11 @@ class TableFormatter:
             else:
                 try:
                     yield format_col_str(idx)
-                except ValueError:
+                except ValueError as err:
                     raise ValueError(
                         'Unable to parse format string "{}" for entry "{}" '
                         'in column "{}"'.format(col_format, col[idx], col.info.name)
-                    )
+                    ) from err
 
         outs["show_length"] = show_length
         outs["n_header"] = n_header

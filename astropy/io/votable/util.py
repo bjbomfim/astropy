@@ -232,8 +232,8 @@ def coerce_range_list_param(p, frames=None, numeric=True):
     try:
         float(p)
         return str(p), 1
-    except TypeError:
-        raise ValueError(f"'{p}' is not a valid range list")
+    except TypeError as exc:
+        raise ValueError(f"'{p}' is not a valid range list") from exc
 
 
 def version_compare(a, b):

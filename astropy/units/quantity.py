@@ -478,11 +478,11 @@ class Quantity(np.ndarray):
                 try:
                     value = float(v.group())
 
-                except Exception:
+                except Exception as exc:
                     raise TypeError(
                         f'Cannot parse "{value}" as a {cls.__name__}. It does not '
                         "start with a number."
-                    )
+                    ) from exc
 
                 unit_string = v.string[v.end() :].strip()
                 if unit_string:
@@ -1292,14 +1292,14 @@ class Quantity(np.ndarray):
 
         try:
             out = super().__getitem__(key)
-        except IndexError:
+        except IndexError as exc:
             # We want zero-dimensional Quantity objects to behave like scalars,
             # so they should raise a TypeError rather than an IndexError.
             if self.isscalar:
                 raise TypeError(
                     f"'{self.__class__.__name__}' object with a scalar value "
                     "does not support indexing"
-                )
+                ) from exc
             else:
                 raise
         # For single elements, ndarray.__getitem__ returns scalars; these
@@ -1345,20 +1345,20 @@ class Quantity(np.ndarray):
     def __float__(self):
         try:
             return float(self.to_value(dimensionless_unscaled))
-        except (UnitsError, TypeError):
+        except (UnitsError, TypeError) as exc:
             raise TypeError(
                 "only dimensionless scalar quantities can be "
                 "converted to Python scalars"
-            )
+            ) from exc
 
     def __int__(self):
         try:
             return int(self.to_value(dimensionless_unscaled))
-        except (UnitsError, TypeError):
+        except (UnitsError, TypeError) as exc:
             raise TypeError(
                 "only dimensionless scalar quantities can be "
                 "converted to Python scalars"
-            )
+            ) from exc
 
     def __index__(self):
         # for indices, we do not want to mess around with scaling at all,
@@ -1366,11 +1366,11 @@ class Quantity(np.ndarray):
         try:
             assert self.unit.is_unity()
             return self.value.__index__()
-        except Exception:
+        except Exception as exc:
             raise TypeError(
                 "only integer dimensionless scalar quantities "
                 "can be converted to a Python index"
-            )
+            ) from exc
 
     # TODO: we may want to add a hook for dimensionless quantities?
     @property
@@ -2224,11 +2224,11 @@ def _unquantify_allclose_arguments(actual, desired, rtol, atol):
     desired = Quantity(desired, subok=True, copy=False)
     try:
         desired = desired.to(actual.unit)
-    except UnitsError:
+    except UnitsError as exc:
         raise UnitsError(
             f"Units for 'desired' ({desired.unit}) and 'actual' "
             f"({actual.unit}) are not convertible"
-        )
+        ) from exc
 
     if atol is None:
         # By default, we assume an absolute tolerance of zero in the
@@ -2240,16 +2240,16 @@ def _unquantify_allclose_arguments(actual, desired, rtol, atol):
         atol = Quantity(atol, subok=True, copy=False)
         try:
             atol = atol.to(actual.unit)
-        except UnitsError:
+        except UnitsError as err:
             raise UnitsError(
                 f"Units for 'atol' ({atol.unit}) and 'actual' "
                 f"({actual.unit}) are not convertible"
-            )
+            ) from err
 
     rtol = Quantity(rtol, subok=True, copy=False)
     try:
         rtol = rtol.to(dimensionless_unscaled)
-    except Exception:
-        raise UnitsError("'rtol' should be dimensionless")
+    except Exception as exc:
+        raise UnitsError("'rtol' should be dimensionless") from exc
 
     return actual.value, desired.value, rtol.value, atol.value

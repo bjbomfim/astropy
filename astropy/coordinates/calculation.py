@@ -179,10 +179,10 @@ def horoscope(birthday, corrected=True, chinese=False):
                     # TODO: Also include Love, Family & Friends, Work, Money, More?
                     item = doc.find(id="overview")
                     desc = item.getText()
-                except Exception:
-                    raise CelestialError(err_msg)
-        except Exception:
-            raise CelestialError(err_msg)
+                except Exception as exc:
+                    raise CelestialError(err_msg) from exc
+        except Exception as exc:
+            raise CelestialError(err_msg) from exc
 
     else:
         birthday = atime.Time(birthday)
@@ -209,8 +209,8 @@ def horoscope(birthday, corrected=True, chinese=False):
                 doc = BeautifulSoup(f, "html.parser")
                 item = doc.find("div", {"id": "content"})
                 desc = item.getText()
-            except Exception:
-                raise CelestialError(err_msg)
+            except Exception as exc:
+                raise CelestialError(err_msg) from exc
 
     print("*" * 79)
     color_print(f"Horoscope for {zodiac_sign.capitalize()} {summ_title_sfx}:", "green")

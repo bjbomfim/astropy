@@ -626,8 +626,8 @@ class NFW(Fittable1DModel):
                         f"Massfactor {massfactor} string not of the form "
                         "'#m', '#c', or 'virial'"
                     )
-            except (AttributeError, TypeError):
-                raise TypeError(f"Massfactor {massfactor} not a tuple or string")
+            except (AttributeError, TypeError) as exc:
+                raise TypeError(f"Massfactor {massfactor} not a tuple or string") from exc
 
         # Set density from masstype specification
         if masstype == "virial":

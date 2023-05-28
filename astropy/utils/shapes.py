@@ -223,11 +223,11 @@ class ShapedLikeNDArray(NDArrayShapeMethods, metaclass=abc.ABCMeta):
     def __getitem__(self, item):
         try:
             return self._apply("__getitem__", item)
-        except IndexError:
+        except IndexError as exc:
             if self.isscalar:
                 raise TypeError(
                     f"scalar {self.__class.__name__!r} object is not subscriptable."
-                )
+                ) from exc
             else:
                 raise
 

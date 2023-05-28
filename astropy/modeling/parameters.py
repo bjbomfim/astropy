@@ -40,12 +40,12 @@ def _tofloat(value):
     if isiterable(value):
         try:
             value = np.asanyarray(value, dtype=float)
-        except (TypeError, ValueError):
+        except (TypeError, ValueError) as exc:
             # catch arrays with strings or user errors like different
             # types of parameters in a parameter set
             raise InputParameterError(
                 f"Parameter of {type(value)} could not be converted to float"
-            )
+            ) from exc
     elif isinstance(value, Quantity):
         # Quantities are fine as is
         pass
@@ -307,11 +307,11 @@ class Parameter:
         else:
             try:
                 oldvalue[key] = value
-            except IndexError:
+            except IndexError as exc:
                 raise InputParameterError(
                     f"Input dimension {key} invalid for {self.name!r} parameter with "
                     f"dimension {value.shape[0]}"
-                )  # likely wrong
+                ) from exc  # likely wrong
 
     def __repr__(self):
         args = f"'{self._name}'"

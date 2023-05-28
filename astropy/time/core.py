@@ -327,8 +327,8 @@ class TimeInfoBase(MixinInfo):
             # passes then any subsequent table operations via setitem will work.
             try:
                 col0._make_value_equivalent(slice(None), col)
-            except ValueError:
-                raise ValueError("input columns have inconsistent locations")
+            except ValueError as err:
+                raise ValueError("input columns have inconsistent locations") from err
 
         # Make a new Time object with the desired shape and attributes
         shape = (length,) + attrs.pop("shape")
@@ -514,11 +514,11 @@ class TimeBase(ShapedLikeNDArray):
             val2 = _make_array(val2, copy)
             try:
                 np.broadcast(val, val2)
-            except ValueError:
+            except ValueError as err:
                 raise ValueError(
                     "Input val and val2 have inconsistent shape; "
                     "they cannot be broadcast together."
-                )
+                ) from err
 
         if scale is not None:
             if not (isinstance(scale, str) and scale.lower() in self.SCALES):
@@ -1052,8 +1052,8 @@ class TimeBase(ShapedLikeNDArray):
         # input index is in bounds.
         try:
             idx0 = operator.index(obj)
-        except TypeError:
-            raise TypeError("obj arg must be an integer")
+        except TypeError as err:
+            raise TypeError("obj arg must be an integer") from err
 
         if axis != 0:
             raise ValueError("axis must be 0")
@@ -1166,7 +1166,7 @@ class TimeBase(ShapedLikeNDArray):
                 "'other' argument must support subtraction with Time "
                 "and return a value that supports comparison with "
                 f"{atol.__class__.__name__}: {err}"
-            )
+            ) from err
 
         return out
 
@@ -1668,12 +1668,12 @@ class TimeBase(ShapedLikeNDArray):
             try:
                 # check the value can be broadcast to the shape of self.
                 val = np.broadcast_to(val, self.shape, subok=True)
-            except Exception:
+            except Exception as err:
                 raise ValueError(
                     "Attribute shape must match or be broadcastable to that of "
                     "Time object. Typically, give either a single value or "
                     "one for each time."
-                )
+                ) from err
 
         return val
 
@@ -1904,7 +1904,7 @@ class Time(TimeBase):
                 except Exception as err:
                     raise ValueError(
                         f"cannot convert value to a compatible Time object: {err}"
-                    )
+                    ) from err
         return value
 
     @classmethod
@@ -2099,10 +2099,10 @@ class Time(TimeBase):
         # get location of observatory in ITRS coordinates at this Time
         try:
             itrs = location.get_itrs(obstime=self)
-        except Exception:
+        except Exception as err:
             raise ValueError(
                 "Supplied location does not have a valid `get_itrs` method"
-            )
+            ) from err
 
         with solar_system_ephemeris.set(ephemeris):
             if kind.lower() == "heliocentric":
@@ -3114,7 +3114,7 @@ class TimeDelta(TimeBase):
             except Exception as err:
                 raise ValueError(
                     f"cannot convert value to a compatible TimeDelta object: {err}"
-                )
+                ) from err
         return value
 
     def isclose(self, other, atol=None, rtol=0.0):
@@ -3139,7 +3139,7 @@ class TimeDelta(TimeBase):
         try:
             other_day = other.to_value(u.day)
         except Exception as err:
-            raise TypeError(f"'other' argument must support conversion to days: {err}")
+            raise TypeError(f"'other' argument must support conversion to days: {err}") from err
 
         if atol is None:
             atol = np.finfo(float).eps * u.day

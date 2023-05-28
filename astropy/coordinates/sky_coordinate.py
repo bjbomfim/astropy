@@ -529,8 +529,8 @@ class SkyCoord(ShapedLikeNDArray):
         # input index is in bounds.
         try:
             idx0 = operator.index(obj)
-        except TypeError:
-            raise TypeError("obj arg must be an integer")
+        except TypeError as exc:
+            raise TypeError("obj arg must be an integer") from exc
 
         if axis != 0:
             raise ValueError("axis must be 0")
@@ -1175,11 +1175,11 @@ class SkyCoord(ShapedLikeNDArray):
                     {"merge_attributes": False} if isinstance(other, SkyCoord) else {}
                 )
                 other = other.transform_to(self, **kwargs)
-            except TypeError:
+            except TypeError as exc:
                 raise TypeError(
                     "Can only get separation to another SkyCoord "
                     "or a coordinate frame with data"
-                )
+                ) from exc
 
         lon1 = self.spherical.lon
         lat1 = self.spherical.lat
@@ -1219,11 +1219,11 @@ class SkyCoord(ShapedLikeNDArray):
                     {"merge_attributes": False} if isinstance(other, SkyCoord) else {}
                 )
                 other = other.transform_to(self, **kwargs)
-            except TypeError:
+            except TypeError as exc:
                 raise TypeError(
                     "Can only get separation to another SkyCoord "
                     "or a coordinate frame with data"
-                )
+                ) from exc
 
         if issubclass(self.data.__class__, UnitSphericalRepresentation):
             raise ValueError(
@@ -1669,11 +1669,11 @@ class SkyCoord(ShapedLikeNDArray):
         if not self.is_equivalent_frame(other):
             try:
                 other = other.transform_to(self, merge_attributes=False)
-            except TypeError:
+            except TypeError as exc:
                 raise TypeError(
                     "Can only get position_angle to another "
                     "SkyCoord or a coordinate frame with data"
-                )
+                ) from exc
 
         slat = self.represent_as(UnitSphericalRepresentation).lat
         slon = self.represent_as(UnitSphericalRepresentation).lon

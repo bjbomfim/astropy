@@ -73,7 +73,7 @@ def _validate_arg_value(
             if arg.unit.is_equivalent(allowed_unit, equivalencies=equivalencies):
                 break
 
-        except AttributeError:  # Either there is no .unit or no .is_equivalent
+        except AttributeError as err:  # Either there is no .unit or no .is_equivalent
             if hasattr(arg, "unit"):
                 error_msg = "a 'unit' attribute without an 'is_equivalent' method"
             else:
@@ -83,7 +83,7 @@ def _validate_arg_value(
                 f"Argument '{param_name}' to function '{func_name}'"
                 f" has {error_msg}. You should pass in an astropy "
                 "Quantity instead."
-            )
+            ) from err
 
     else:
         error_msg = (

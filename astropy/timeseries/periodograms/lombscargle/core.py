@@ -155,8 +155,8 @@ class LombScargle(BasePeriodogram):
                 dy = units.Quantity(dy)
                 try:
                     dy = units.Quantity(dy, unit=y.unit)
-                except units.UnitConversionError:
-                    raise ValueError("Units of dy not equivalent to units of y")
+                except units.UnitConversionError as err:
+                    raise ValueError("Units of dy not equivalent to units of y") from err
         return t, y, dy
 
     def _validate_frequency(self, frequency):
@@ -166,8 +166,8 @@ class LombScargle(BasePeriodogram):
             frequency = units.Quantity(frequency)
             try:
                 frequency = units.Quantity(frequency, unit=1.0 / self._trel.unit)
-            except units.UnitConversionError:
-                raise ValueError("Units of frequency not equivalent to units of 1/t")
+            except units.UnitConversionError as err:
+                raise ValueError("Units of frequency not equivalent to units of 1/t") from err
         else:
             if has_units(frequency):
                 raise ValueError("frequency have units while 1/t doesn't.")
@@ -180,8 +180,8 @@ class LombScargle(BasePeriodogram):
             t = units.Quantity(t)
             try:
                 t = units.Quantity(t, unit=self._trel.unit)
-            except units.UnitConversionError:
-                raise ValueError("Units of t not equivalent to units of input self.t")
+            except units.UnitConversionError as err:
+                raise ValueError("Units of t not equivalent to units of input self.t") from err
         return t
 
     def _power_unit(self, norm):

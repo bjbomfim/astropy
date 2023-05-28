@@ -69,11 +69,11 @@ def get_converters_and_unit(f, unit1, unit2):
     else:
         try:
             converters[changeable] = get_converter(unit2, unit1)
-        except UnitsError:
+        except UnitsError as exc:
             raise UnitConversionError(
                 f"Can only apply '{f.__name__}' function to quantities "
                 "with compatible dimensions"
-            )
+            ) from exc
 
         return converters, unit1
 
@@ -124,10 +124,10 @@ def helper_modf(f, unit):
             [get_converter(unit, dimensionless_unscaled)],
             (dimensionless_unscaled, dimensionless_unscaled),
         )
-    except UnitsError:
+    except UnitsError as exc:
         raise UnitTypeError(
             f"Can only apply '{f.__name__}' function to dimensionless quantities"
-        )
+        ) from exc
 
 
 def helper__ones_like(f, unit):
@@ -140,10 +140,10 @@ def helper_dimensionless_to_dimensionless(f, unit):
 
     try:
         return ([get_converter(unit, dimensionless_unscaled)], dimensionless_unscaled)
-    except UnitsError:
+    except UnitsError as exc:
         raise UnitTypeError(
             f"Can only apply '{f.__name__}' function to dimensionless quantities"
-        )
+        ) from exc
 
 
 def helper_dimensionless_to_radian(f, unit):
@@ -154,10 +154,10 @@ def helper_dimensionless_to_radian(f, unit):
 
     try:
         return [get_converter(unit, dimensionless_unscaled)], radian
-    except UnitsError:
+    except UnitsError as exc:
         raise UnitTypeError(
             f"Can only apply '{f.__name__}' function to dimensionless quantities"
-        )
+        ) from exc
 
 
 def helper_degree_to_radian(f, unit):
@@ -165,10 +165,10 @@ def helper_degree_to_radian(f, unit):
 
     try:
         return [get_converter(unit, degree)], radian
-    except UnitsError:
+    except UnitsError as exc:
         raise UnitTypeError(
             f"Can only apply '{f.__name__}' function to quantities with angle units"
-        )
+        ) from exc
 
 
 def helper_radian_to_degree(f, unit):
@@ -176,10 +176,10 @@ def helper_radian_to_degree(f, unit):
 
     try:
         return [get_converter(unit, radian)], degree
-    except UnitsError:
+    except UnitsError as exc:
         raise UnitTypeError(
             f"Can only apply '{f.__name__}' function to quantities with angle units"
-        )
+        ) from exc
 
 
 def helper_radian_to_dimensionless(f, unit):
@@ -187,10 +187,10 @@ def helper_radian_to_dimensionless(f, unit):
 
     try:
         return [get_converter(unit, radian)], dimensionless_unscaled
-    except UnitsError:
+    except UnitsError as exc:
         raise UnitTypeError(
             f"Can only apply '{f.__name__}' function to quantities with angle units"
-        )
+        ) from exc
 
 
 def helper_frexp(f, unit):
@@ -226,8 +226,8 @@ def helper_power(f, unit1, unit2):
 
     try:
         return [None, get_converter(unit2, dimensionless_unscaled)], False
-    except UnitsError:
-        raise UnitTypeError("Can only raise something to a dimensionless quantity")
+    except UnitsError as exc:
+        raise UnitTypeError("Can only raise something to a dimensionless quantity") from exc
 
 
 def helper_ldexp(f, unit1, unit2):
@@ -250,10 +250,10 @@ def helper_heaviside(f, unit1, unit2):
         converter2 = (
             get_converter(unit2, dimensionless_unscaled) if unit2 is not None else None
         )
-    except UnitsError:
+    except UnitsError as exc:
         raise UnitTypeError(
             "Can only apply 'heaviside' function with a dimensionless second argument."
-        )
+        ) from exc
     return ([None, converter2], dimensionless_unscaled)
 
 
@@ -265,10 +265,10 @@ def helper_two_arg_dimensionless(f, unit1, unit2):
         converter2 = (
             get_converter(unit2, dimensionless_unscaled) if unit2 is not None else None
         )
-    except UnitsError:
+    except UnitsError as exc:
         raise UnitTypeError(
             f"Can only apply '{f.__name__}' function to dimensionless quantities"
-        )
+        ) from exc
     return ([converter1, converter2], dimensionless_unscaled)
 
 
@@ -309,11 +309,11 @@ def helper_clip(f, unit1, unit2, unit3):
                 (None if unit is None else get_converter(unit, dimensionless_unscaled))
                 for unit in (unit2, unit3)
             ]
-        except UnitsError:
+        except UnitsError as exc:
             raise UnitConversionError(
                 f"Can only apply '{f.__name__}' function to quantities with "
                 "compatible dimensions"
-            )
+            ) from exc
 
     else:
         result_unit = unit1

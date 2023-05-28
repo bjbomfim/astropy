@@ -223,10 +223,10 @@ class UnifiedInputRegistry(_UnifiedIORegistryBase):
                 # to desired subclass.
                 try:
                     data = cls(data)
-                except Exception:
+                except Exception as exc:
                     raise TypeError(
                         f"could not convert reader output to {cls.__name__} class."
-                    )
+                    ) from exc 
         finally:
             if ctx is not None:
                 ctx.__exit__(*sys.exc_info())

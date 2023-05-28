@@ -634,12 +634,12 @@ class FunctionQuantity(Quantity):
             try:
                 # "or 'nonsense'" ensures `None` breaks, just in case.
                 unit = self._unit_class(function_unit=unit or "nonsense")
-            except Exception:
+            except Exception as exc:
                 raise UnitTypeError(
                     f"{type(self).__name__} instances require"
                     f" {self._unit_class.__name__} function units, so cannot set it to"
                     f" '{unit}'."
-                )
+                ) from exc
 
         self._unit = unit
 

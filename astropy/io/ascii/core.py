@@ -353,10 +353,10 @@ class BaseInputter:
                     else:
                         lines = table[0].split(newline)
 
-            except TypeError:
+            except TypeError as exc:
                 raise TypeError(
                     'Input "table" must be a string (filename or data) or an iterable'
-                )
+                ) from exc
 
         return self.process_lines(lines)
 
@@ -700,8 +700,8 @@ class BaseHeader:
         """
         try:
             idx = self.colnames.index(name)
-        except ValueError:
-            raise KeyError(f"Column {name} does not exist")
+        except ValueError as exc:
+            raise KeyError(f"Column {name} does not exist") from exc
 
         col = self.cols[idx]
 
@@ -719,10 +719,10 @@ class BaseHeader:
         try:
             type_map_key = self.get_type_map_key(col)
             return self.col_type_map[type_map_key.lower()]
-        except KeyError:
+        except KeyError as exc:
             raise ValueError(
                 f'Unknown data type ""{col.raw_type}"" for column "{col.name}"'
-            )
+            ) from exc
 
     def check_column_names(self, names, strict_names, guessing):
         """
@@ -1091,7 +1091,7 @@ class BaseOutputter:
             raise ValueError(
                 "Error: invalid format for converters, see "
                 f"documentation\n{converters}: {err}"
-            )
+            ) from err
         return converters_out
 
     def _convert_vals(self, cols):

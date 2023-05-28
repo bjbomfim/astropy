@@ -174,8 +174,8 @@ class Builder(object):
         real, imag = list(map(self.build_Const, o.getChildren()))
         try:
             real = float(real)
-        except TypeError:
-            raise UnknownType('Add')
+        except TypeError as exc:
+            raise UnknownType('Add') from exc
         if not isinstance(imag, complex) or imag.real != 0.0:
             raise UnknownType('Add')
         return real+imag
@@ -962,8 +962,8 @@ class Section(dict):
                     raise KeyError()
                 else:
                     return self.main._bools[val.lower()]
-            except KeyError:
-                raise ValueError('Value "%s" is neither True nor False' % val)
+            except KeyError as exc:
+                raise ValueError('Value "%s" is neither True nor False' % val) from exc
 
 
     def as_int(self, key):

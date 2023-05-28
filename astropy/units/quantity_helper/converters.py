@@ -201,7 +201,7 @@ def converters_and_unit(function, method, *args):
                             "dimensionless quantities when other argument is not "
                             "a quantity (unless the latter is all zero/infinity/nan)."
                         )
-            except TypeError:
+            except TypeError as exc:
                 # _can_have_arbitrary_unit failed: arg could not be compared
                 # with zero or checked to be finite. Then, ufunc will fail too.
                 raise TypeError(
@@ -209,7 +209,7 @@ def converters_and_unit(function, method, *args):
                         function.__name__,
                         ",".join([arg.__class__.__name__ for arg in args]),
                     )
-                )
+                ) from exc
 
         # In the case of np.power and np.float_power, the unit itself needs to
         # be modified by an amount that depends on one of the input values,

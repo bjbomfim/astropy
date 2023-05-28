@@ -282,12 +282,12 @@ class NDUncertainty(metaclass=ABCMeta):
                 unit_from_data = self._data_unit_to_uncertainty_unit(parent_unit)
                 try:
                     unit_from_data.to(self.unit)
-                except UnitConversionError:
+                except UnitConversionError as exc:
                     raise UnitConversionError(
                         "Unit {} of uncertainty "
                         "incompatible with unit {} of "
                         "data".format(self.unit, parent_unit)
-                    )
+                    ) from exc
 
     @abstractmethod
     def _data_unit_to_uncertainty_unit(self, value):

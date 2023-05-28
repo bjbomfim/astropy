@@ -210,7 +210,7 @@ class EarthLocation(u.Quantity):
                     "Coordinates could not be parsed as either "
                     "geocentric or geodetic, with respective "
                     f'exceptions "{exc_geocentric}" and "{exc_geodetic}"'
-                )
+                ) from exc_geodetic
         return self
 
     @classmethod
@@ -254,8 +254,8 @@ class EarthLocation(u.Quantity):
             x = u.Quantity(x, unit, copy=False)
             y = u.Quantity(y, unit, copy=False)
             z = u.Quantity(z, unit, copy=False)
-        except u.UnitsError:
-            raise u.UnitsError("Geocentric coordinate units should all be consistent.")
+        except u.UnitsError as err:
+            raise u.UnitsError("Geocentric coordinate units should all be consistent.") from err
 
         x, y, z = np.broadcast_arrays(x, y, z)
         struc = np.empty(x.shape, cls._location_dtype)

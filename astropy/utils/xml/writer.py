@@ -187,11 +187,11 @@ class XMLWriter:
             # it is not nocessary
             try:
                 import bleach
-            except ImportError:
+            except ImportError as exc:
                 raise ValueError(
                     "bleach package is required when HTML escaping is disabled.\n"
                     'Use "pip install bleach".'
-                )
+                ) from exc
 
             if clean_kwargs is None:
                 clean_kwargs = {}

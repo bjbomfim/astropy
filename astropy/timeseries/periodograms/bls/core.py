@@ -289,8 +289,8 @@ class BoxLeastSquares(BasePeriodogram):
         # Check for absurdities in the ``oversample`` choice
         try:
             oversample = int(oversample)
-        except TypeError:
-            raise ValueError(f"oversample must be an int, got {oversample}")
+        except TypeError as err:
+            raise ValueError(f"oversample must be an int, got {oversample}") from err
         if oversample < 1:
             raise ValueError("oversample must be greater than or equal to 1")
 
@@ -858,8 +858,8 @@ class BoxLeastSquaresResults(dict):
     def __getattr__(self, name):
         try:
             return self[name]
-        except KeyError:
-            raise AttributeError(name)
+        except KeyError as err:
+            raise AttributeError(name) from err
 
     __setattr__ = dict.__setitem__
     __delattr__ = dict.__delitem__

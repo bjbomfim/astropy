@@ -145,10 +145,10 @@ class SkyOffsetFrame(BaseCoordinateFrame):
             # We get the origin argument, and handle it here.
             try:
                 origin_frame = kwargs["origin"]
-            except KeyError:
+            except KeyError as exc:
                 raise TypeError(
                     "Can't initialize a SkyOffsetFrame without origin= keyword."
-                )
+                ) from exc
             if hasattr(origin_frame, "frame"):
                 origin_frame = origin_frame.frame
             newcls = make_skyoffset_cls(origin_frame.__class__)

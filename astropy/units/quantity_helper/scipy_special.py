@@ -44,10 +44,10 @@ def helper_degree_to_dimensionless(f, unit):
 
     try:
         return [get_converter(unit, degree)], dimensionless_unscaled
-    except UnitsError:
+    except UnitsError as exc:
         raise UnitTypeError(
             f"Can only apply '{f.__name__}' function to quantities with angle units"
-        )
+        ) from exc
 
 
 def helper_degree_minute_second_to_radian(f, unit1, unit2, unit3):
@@ -59,10 +59,10 @@ def helper_degree_minute_second_to_radian(f, unit1, unit2, unit3):
             get_converter(unit2, arcmin),
             get_converter(unit3, arcsec),
         ], radian
-    except UnitsError:
+    except UnitsError as exc:
         raise UnitTypeError(
             f"Can only apply '{f.__name__}' function to quantities with angle units"
-        )
+        ) from exc
 
 
 def get_scipy_special_helpers():

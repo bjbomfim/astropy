@@ -333,7 +333,7 @@ class ConfigItem:
             raise TypeError(
                 f"Provided value for configuration item {self.name} not valid:"
                 f" {e.args[0]}"
-            )
+            ) from e
 
         sec = get_config(self.module, rootname=self.rootname)
 
@@ -483,7 +483,7 @@ class ConfigItem:
         try:
             return self._validate_val(val)
         except validate.ValidateError as e:
-            raise TypeError(f"Configuration value not valid: {e.args[0]}")
+            raise TypeError(f"Configuration value not valid: {e.args[0]}") from e
 
     def _validate_val(self, val):
         """Validates the provided value based on cfgtype and returns the

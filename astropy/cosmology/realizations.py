@@ -153,10 +153,10 @@ class default_cosmology(ScienceState):
         """
         try:
             value = getattr(sys.modules[__name__], name)
-        except AttributeError:
+        except AttributeError as exc:
             raise ValueError(
                 f"Unknown cosmology {name!r}. Valid cosmologies:\n{available}"
-            )
+            ) from exc
 
         if not isinstance(value, Cosmology):
             raise TypeError(f"cannot find a Cosmology realization called {name}.")

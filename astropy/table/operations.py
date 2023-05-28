@@ -1223,8 +1223,8 @@ def _join(
 
     try:
         idxs, idx_sort = _get_join_sort_idxs(keys, left, right)
-    except NotImplementedError:
-        raise TypeError("one or more key columns are not sortable")
+    except NotImplementedError as err:
+        raise TypeError("one or more key columns are not sortable") from err
 
     # Now that we have idxs and idx_sort, revert to the original table args to
     # carry on with making the output joined table. `keys` is set to to an empty
@@ -1347,8 +1347,8 @@ def _join_keys_left_right(left, right, keys, keys_left, keys_right, join_funcs):
             if isinstance(key, str):
                 try:
                     cols.append(table[key])
-                except KeyError:
-                    raise ValueError(f"{label} table does not have key column {key!r}")
+                except KeyError as err:
+                    raise ValueError(f"{label} table does not have key column {key!r}") from err
             else:
                 if len(key) != len(table):
                     raise ValueError(

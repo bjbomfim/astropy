@@ -1772,10 +1772,10 @@ class Header:
 
         try:
             return indices[n]
-        except IndexError:
+        except IndexError as exc:
             raise IndexError(
                 f"There are only {len(indices)} {keyword!r} cards in the header."
-            )
+            ) from exc
 
     def _keyword_from_index(self, idx):
         """

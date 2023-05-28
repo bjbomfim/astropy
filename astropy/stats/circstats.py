@@ -34,8 +34,8 @@ def _components(data, p=1, phi=0.0, axis=None, weights=None):
         weights = np.ones((1,))
     try:
         weights = np.broadcast_to(weights, data.shape)
-    except ValueError:
-        raise ValueError("Weights and data have inconsistent shape.")
+    except ValueError as exc:
+        raise ValueError("Weights and data have inconsistent shape.") from exc
 
     C = np.sum(weights * np.cos(p * (data - phi)), axis) / np.sum(weights, axis)
     S = np.sum(weights * np.sin(p * (data - phi)), axis) / np.sum(weights, axis)
@@ -472,8 +472,8 @@ def vtest(data, mu=0.0, axis=None, weights=None):
         weights = np.ones((1,))
     try:
         weights = np.broadcast_to(weights, data.shape)
-    except ValueError:
-        raise ValueError("Weights and data have inconsistent shape.")
+    except ValueError as exc:
+        raise ValueError("Weights and data have inconsistent shape.") from exc
 
     n = np.size(data, axis=axis)
     R0bar = np.sum(weights * np.cos(data - mu), axis) / np.sum(weights, axis)

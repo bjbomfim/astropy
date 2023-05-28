@@ -83,8 +83,8 @@ def read_table_hdf5(input, path=None, character_as_bytes=True):
     """
     try:
         import h5py
-    except ImportError:
-        raise Exception("h5py is required to read and write HDF5 files")
+    except ImportError as exc:
+        raise Exception("h5py is required to read and write HDF5 files") from exc
 
     # This function is iterative, and only gets to writing the file when
     # the input is an hdf5 Group. Moreover, the input variable is changed in
@@ -98,8 +98,8 @@ def read_table_hdf5(input, path=None, character_as_bytes=True):
         if path is not None:
             try:
                 input = input[path]
-            except (KeyError, ValueError):
-                raise OSError(f"Path {path} does not exist")
+            except (KeyError, ValueError) as exc:
+                raise OSError(f"Path {path} does not exist") from exc
 
         # `input` is now either a group or a dataset. If it is a group, we
         # will search for all structured arrays inside the group, and if there
@@ -130,8 +130,8 @@ def read_table_hdf5(input, path=None, character_as_bytes=True):
         if hasattr(input, "read"):
             try:
                 input = input.name
-            except AttributeError:
-                raise TypeError("h5py can only open regular files")
+            except AttributeError as exc:
+                raise TypeError("h5py can only open regular files") from exc\
 
         # Open the file for reading, and recursively call read_table_hdf5 with
         # the file object and the path.

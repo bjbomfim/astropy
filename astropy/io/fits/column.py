@@ -986,8 +986,8 @@ class Column(NotifierMixin):
             # legit FITS format?
             format = cls(format)
             recformat = format.recformat
-        except VerifyError:
-            raise VerifyError(f"Illegal format `{format}`.")
+        except VerifyError as exc:
+            raise VerifyError(f"Illegal format `{format}`.") from exc
 
         return format, recformat
 
@@ -2075,8 +2075,8 @@ class _VLF(np.ndarray):
                 # this handles ['abc'] and [['a','b','c']]
                 # equally, beautiful!
                 input = [chararray.array(x, itemsize=1) for x in input]
-            except Exception:
-                raise ValueError(f"Inconsistent input data array: {input}")
+            except Exception as exc:
+                raise ValueError(f"Inconsistent input data array: {input}") from exc
 
         a = np.array(input, dtype=object)
         self = np.ndarray.__new__(cls, shape=(len(input),), buffer=a, dtype=object)
@@ -2278,11 +2278,11 @@ def _parse_tformat(tform):
     """
     try:
         (repeat, format, option) = TFORMAT_RE.match(tform.strip()).groups()
-    except Exception:
+    except Exception as exc:
         # TODO: Maybe catch this error use a default type (bytes, maybe?) for
         # unrecognized column types.  As long as we can determine the correct
         # byte width somehow..
-        raise VerifyError(f"Format {tform!r} is not recognized.")
+        raise VerifyError(f"Format {tform!r} is not recognized.") from exc
 
     if repeat == "":
         repeat = 1
@@ -2337,8 +2337,8 @@ def _parse_ascii_tformat(tform, strict=False):
         )
         try:
             val = int(val)
-        except (ValueError, TypeError):
-            raise VerifyError(msg.format(tform))
+        except (ValueError, TypeError) as exc:
+            raise VerifyError(msg.format(tform)) from exc
 
         return val
 
@@ -2620,8 +2620,8 @@ def _parse_tdisp_format(tdisp):
     )
     try:
         tdisp_re = TDISP_RE_DICT[fmt_key]
-    except KeyError:
-        raise VerifyError(f"Format {tdisp} is not recognized.")
+    except KeyError as exc:
+        raise VerifyError(f"Format {tdisp} is not recognized.") from exc
 
     match = tdisp_re.match(tdisp.strip())
     if not match or match.group("formatc") is None:
@@ -2669,8 +2669,8 @@ def _fortran_to_python_format(tdisp):
         fmt = TDISP_FMT_DICT[format_type]
         return fmt.format(width=width, precision=precision)
 
-    except KeyError:
-        raise VerifyError(f"Format {format_type} is not recognized.")
+    except KeyError as exc:
+        raise VerifyError(f"Format {format_type} is not recognized.") from exc 
 
 
 def python_to_tdisp(format_string, logical_dtype=False):

@@ -57,10 +57,10 @@ def helper_s2c(f, unit1, unit2):
             get_converter(unit1, radian),
             get_converter(unit2, radian),
         ], dimensionless_unscaled
-    except UnitsError:
+    except UnitsError as exc:
         raise UnitTypeError(
             f"Can only apply '{f.__name__}' function to quantities with angle units"
-        )
+        ) from exc
 
 
 def helper_s2p(f, unit1, unit2, unit3):
@@ -68,10 +68,10 @@ def helper_s2p(f, unit1, unit2, unit3):
 
     try:
         return [get_converter(unit1, radian), get_converter(unit2, radian), None], unit3
-    except UnitsError:
+    except UnitsError as exc:
         raise UnitTypeError(
             f"Can only apply '{f.__name__}' function to quantities with angle units"
-        )
+        ) from exc
 
 
 def helper_c2s(f, unit1):
@@ -93,10 +93,10 @@ def helper_gc2gd(f, nounit, unit1):
         raise UnitTypeError("ellipsoid cannot be a quantity.")
     try:
         return [None, get_converter(unit1, m)], (radian, radian, m, None)
-    except UnitsError:
+    except UnitsError as exc:
         raise UnitTypeError(
             f"Can only apply '{f.__name__}' function to quantities with length units"
-        )
+        ) from exc
 
 
 def helper_gc2gde(f, unit_r, unit_flat, unit_xyz):
@@ -126,11 +126,11 @@ def helper_gd2gc(f, nounit, unit1, unit2, unit3):
             get_converter(unit2, radian),
             get_converter(unit3, m),
         ], (m, None)
-    except UnitsError:
+    except UnitsError as exc:
         raise UnitTypeError(
             f"Can only apply '{f.__name__}' function to lon, lat "
             "with angle and height with length units"
-        )
+        ) from exc
 
 
 def helper_gd2gce(f, unit_r, unit_flat, unit_long, unit_lat, unit_h):

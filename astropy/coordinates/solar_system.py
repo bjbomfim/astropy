@@ -169,11 +169,11 @@ def _get_kernel(value):
 
     try:
         from jplephem.spk import SPK
-    except ImportError:
+    except ImportError as exc:
         raise ImportError(
             "Solar system JPL ephemeris calculations require the jplephem package "
             "(https://pypi.org/project/jplephem/)"
-        )
+        ) from exc
 
     if value.lower() == "jpl":
         # Get the default JPL ephemeris URL
@@ -191,11 +191,11 @@ def _get_kernel(value):
     else:
         try:
             urlparse(value)
-        except Exception:
+        except Exception as exc:
             raise ValueError(
                 f"{value} was not one of the standard strings and "
                 "could not be parsed as a file path or URL"
-            )
+            ) from exc
 
     return SPK.open(download_file(value, cache=True))
 
@@ -261,11 +261,11 @@ def _get_body_barycentric_posvel(body, time, ephemeris=None, get_velocity=True):
                 else:
                     try:
                         body_index = PLAN94_BODY_NAME_TO_PLANET_INDEX[body]
-                    except KeyError:
+                    except KeyError as exc:
                         raise KeyError(
                             f"{body}'s position and velocity cannot be "
                             f"calculated with the '{ephemeris}' ephemeris."
-                        )
+                        ) from exc
                     body_pv_helio = erfa.plan94(jd1, jd2, body_index)
                     body_pv_bary = erfa.pvppv(body_pv_helio, sun_pv_bary)
 
@@ -282,11 +282,11 @@ def _get_body_barycentric_posvel(body, time, ephemeris=None, get_velocity=True):
                 # Look up kernel chain for JPL ephemeris, based on name
                 try:
                     kernel_spec = BODY_NAME_TO_KERNEL_SPEC[body.lower()]
-                except KeyError:
+                except KeyError as exc:
                     raise KeyError(
                         f"{body}'s position cannot be calculated with "
                         f"the {ephemeris} ephemeris."
-                    )
+                    ) from exc 
             else:
                 # otherwise, assume the user knows what their doing and intentionally
                 # passed in a kernel chain

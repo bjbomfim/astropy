@@ -163,8 +163,8 @@ class BitFlagNameMeta(type):
             )
         try:
             return flagnames[name.lower()]
-        except KeyError:
-            raise AttributeError(f"Flag '{name}' not defined")
+        except KeyError as exc:
+            raise AttributeError(f"Flag '{name}' not defined") from exc
 
     def __getitem__(cls, key):
         return cls.__getattr__(key)

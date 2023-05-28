@@ -831,7 +831,7 @@ def assert_is_spectral_unit(value):
         raise UnitsError(
             "The 'rest' value must be a spectral equivalent "
             "(frequency, wavelength, or energy)."
-        )
+        ) from ex
 
 
 def pixel_scale(pixscale):

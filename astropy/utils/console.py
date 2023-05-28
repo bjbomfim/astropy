@@ -528,8 +528,8 @@ class ProgressBar:
         else:
             try:
                 self._total = int(total_or_items)
-            except TypeError:
-                raise TypeError("First argument must be int or sequence")
+            except TypeError as exc:
+                raise TypeError("First argument must be int or sequence") from exc
             else:
                 self._items = iter(range(self._total))
 

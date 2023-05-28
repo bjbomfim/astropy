@@ -379,8 +379,8 @@ class Card(_Verify):
             if self.field_specifier:
                 try:
                     self._value = _int_or_float(self._value)
-                except ValueError:
-                    raise ValueError(f"value {self._value} is not a float")
+                except ValueError as exc :
+                    raise ValueError(f"value {self._value} is not a float") from exc
 
     @value.deleter
     def value(self):

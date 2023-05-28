@@ -96,10 +96,10 @@ class LogUnit(FunctionUnitBase):
         except AttributeError:
             # if other is not a unit (i.e., does not have _to).
             return NotImplemented
-        except UnitsError:
+        except UnitsError as exc:
             raise UnitsError(
                 "Can only add/subtract logarithmic units of compatible type."
-            )
+            ) from exc
 
         other_physical_unit = getattr(other, "physical_unit", dimensionless_unscaled)
         physical_unit = CompositeUnit(

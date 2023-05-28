@@ -232,8 +232,8 @@ class LombScargleMultiband(LombScargle):
                 dy = u.Quantity(dy)
                 try:
                     dy = u.Quantity(dy, unit=y.unit)
-                except u.UnitConversionError:
-                    raise ValueError("Units of dy not equivalent " "to units of y")
+                except u.UnitConversionError as err:
+                    raise ValueError("Units of dy not equivalent " "to units of y") from err
         return t, y, bands, dy
 
     def autofrequency(

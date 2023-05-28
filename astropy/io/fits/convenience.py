@@ -573,14 +573,14 @@ def table_to_hdu(table, character_as_bytes=False):
 
             try:
                 col.unit = unit.to_string(format="fits")
-            except UnitScaleError:
+            except UnitScaleError as exc:
                 scale = unit.scale
                 raise UnitScaleError(
                     f"The column '{col.name}' could not be stored in FITS "
                     f"format because it has a scale '({str(scale)})' that "
                     "is not recognized by the FITS standard. Either scale "
                     "the data or change the units."
-                )
+                ) from exc
             except ValueError:
                 # Warn that the unit is lost, but let the details depend on
                 # whether the column was serialized (because it was a

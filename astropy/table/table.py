@@ -833,11 +833,11 @@ class Table:
                         dtype = np.dtype(dtype)
                         names = dtype.names
                         dtype = [dtype[name] for name in names]
-                    except Exception:
+                    except Exception as err:
                         raise ValueError(
                             "dtype was specified but could not be "
                             "parsed for column names"
-                        )
+                        ) from err
             # names is guaranteed to be set at this point
             init_func = self._init_from_list
             n_cols = len(names)
@@ -1389,9 +1389,9 @@ class Table:
                 copy=copy,
                 copy_indices=self._init_indices,
             )
-        except Exception:
+        except Exception as err:
             # Broad exception class since we don't know what might go wrong
-            raise ValueError("unable to convert data to Column for Table")
+            raise ValueError("unable to convert data to Column for Table") from err
 
         col = self._convert_col_for_table(col)
 
@@ -2290,8 +2290,8 @@ class Table:
         """
         try:
             return self.colnames.index(name)
-        except ValueError:
-            raise ValueError(f"Column {name} does not exist")
+        except ValueError as err:
+            raise ValueError(f"Column {name} does not exist") from err
 
     def add_column(
         self,
@@ -3109,11 +3109,11 @@ class Table:
     def _set_row(self, idx, colnames, vals):
         try:
             assert len(vals) == len(colnames)
-        except Exception:
+        except Exception as err:
             raise ValueError(
                 "right hand side must be a sequence of values with "
                 "the same length as the number of selected columns"
-            )
+            ) from err
 
         # Keep track of original values before setting each column so that
         # setting row can be transactional.

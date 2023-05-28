@@ -120,13 +120,13 @@ class Attribute:
                         )
                     else:
                         out = np.broadcast_to(out, instance_shape, subok=True)
-                except ValueError:
+                except ValueError as exc:
                     # raise more informative exception.
                     raise ValueError(
                         f"attribute {self.name} should be scalar or have shape"
                         f" {instance_shape}, but it has shape {out.shape} and could not"
                         " be broadcast."
-                    )
+                    ) from exc
 
                 converted = True
 

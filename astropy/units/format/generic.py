@@ -456,7 +456,7 @@ class Generic(Base):
             if t.value in registry.aliases:
                 return registry.aliases[t.value]
 
-            raise ValueError(f"At col {t.lexpos}, {str(e)}")
+            raise ValueError(f"At col {t.lexpos}, {str(e)}") from e
 
     @classmethod
     def _parse_unit(cls, s, detailed_exception=True):

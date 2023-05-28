@@ -123,7 +123,7 @@ def _copy_input_if_needed(
         raise TypeError(
             "input should be a Numpy array or something convertible into a float array",
             e,
-        )
+        ) from e
     return output
 
 
